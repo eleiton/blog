@@ -31,26 +31,32 @@ After reading this post series, you'll understand how to:
 For developers who prefer to dive straight into the code, I've got you covered! 
 The docker-based deployment solution is available on GitHub. Simply click [this link](https://github.com/eleiton/ollama-intel-arc) to access the code repository and start building your own AI-powered workflow today.
 
+## Requirements
+1. GPU: Intel Arc Series
+2. Operating System: Linux
+3. Container Management: Podman or Docker
+4. Python: Version 3.10 or higher
+
 ## Ollama
-Our solution's backbone is built around a powerful LLM engine, which we will utilize Ollama for. Fortunately, the installation process of this tool is thoroughly documented in their GitHub repository[^ollama].  
+Our solution's backbone is built around a powerful LLM engine, which we will utilize Ollama for. Fortunately, the installation process of this tool is thoroughly documented in their GitHub repository.  
 
 Unfortunately, our primary goal of utilizing an Intel Arc Series GPU poses a challenge. While Ollama supports multiple GPUs, Intel Arc is not yet natively supported.
 
 Lucky for us, the Intel team is actively addressing this issue by providing pre-configured docker images that include all necessary drivers and setup for a seamless experience.  So we will make use of this work.
 
-First we create a `docker-compose.yml` file, with an Ollama service using intel's official docker `image`.
+Our first task is to create a `docker-compose.yml` file, with an Ollama service using Intel's official docker `image`.
 
-We want to configure the `devices`property to allow access to our GPU device. In Unix-like operating systems it can be accessed through the `/dev/dri` directory, which contains device files for Direct Rendering Infrastructure (DRI) devices, which are used for hardware-accelerated graphics
+Inside this file, we want to configure the `devices` property to allow access to our GPU. This can be done through the `/dev/dri` directory.
 
 For `volumes`, let's create a new named volume to persist model downloads from Ollama outside the Docker container. This ensures that we can rebuild the container from scratch without losing access to large model files.
 
-Let's expose in `ports` the port `11434`, which is used to allow external tools to connect to the Ollama API.  Open WebUI uses this port to connect to Ollama.
+In the `ports` section, let's expose port `11434`, which is used to allow external tools to connect to the Ollama API.  Open WebUI uses this port to connect.
 
 In the `environment` section we define the environment variables required to enable Intel Arc.
 
 We will end our configuration file by adding a `comand` that runs inside the container to start up Ollama as soon as the container is ready.
 
-The `docker-compose.yml` file should look like this:
+The `docker-compose.yml` file should look like this, take note that we're calling our container `ollama-intel-arc`:
 
 ```yaml 
 version: '3'
@@ -85,19 +91,15 @@ You can now try to access Ollama API on the [port](http://localhost:11434) we ex
 curl http://localhost:11434
 ```
 
-And if you want to connect to the Ollama container, you can run this command:
+Now go ahead and connect to the Ollama container, you need to run this command:
 ```bash
 podman exec -it ollama-intel-arc /bin/bash
 ```
-Once connected, you can reference the Ollama service by running it like this:
-```bash
-/llm/ollama/ollama
-```
 
-Let's run deepseek, one of the models supported by Ollama.
+Once connected, you can run the Ollama service to download our first LLM.  Let's run `deepseek`, one of the models supported by Ollama.
 
 ```bash
-ollama run deepseek-r1:1.5b
+/llm/ollama/ollama run deepseek-r1:1.5b
 ```
 
 Once the model downloads, you are presented with a prompt, where you can ask the model anything you like.
@@ -106,13 +108,55 @@ Once the model downloads, you are presented with a prompt, where you can ask the
   <source src="/assets/img/2025-03-16/ollama.webm" type="video/webm"/>
 </video>
 
-Now that you have access to Ollama, you've been able to see how to download pre-trained models and running queries on them.
+But if you're a software developer, you might want to build your own chatbot.  One of the simplest ways of building a chatbot is by using Gradio.  Let's write some Python code for this:
+
+```python
+import requests
+import json
+import gradio as gr
+
+url = "http://localhost:11434/api/generate"
+
+headers = {
+    'Content-Type': 'application/json'
+}
+
+def generate_response(prompt):
+    data = {
+        "model": "deepseek-r1:1.5b",
+        "stream": False,
+        "prompt": prompt
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    
+    if response.status_code == 200:
+        response_txt = response.text
+        data = json.loads(response_txt)
+        actual_response = data["response"]
+        return actual_response
+    else:
+        print("Error:", response.status_code, response.text)
+
+iface = gr.Interface(
+  fn=generate_response,
+  inputs=["text"],
+  outputs=["text"]
+)
+
+if __name__ == "__main__":
+    iface.launch()
+
+```
+That's all the code you need to get started.  Create a python virtual environment, install the `requests` and `gradio` packages, and give it a try:
+
+![Desktop View](/assets/img/2025-03-16/gradio.png){: width="100%" height="auto"}
+
+Now you have access to Ollama, you've been able to see how to download pre-trained models and running queries on them.
+You also learned how to quickly build your first chatbot using Python.
 
 In the second part of this post series, we'll dive into the world of Generative AI, and we'll be putting Stable Diffusion to the test. This powerful deep learning text-to-image model will allow us to generate stunning visual content from simple text prompts.  
 
 
 ## References
 GitHub Repository: <https://github.com/eleiton/ollama-intel-arc>
-
-## Footer
-[^ollama]: [Ollama GitHub repository](https://github.com/ollama/ollama)
