@@ -14,9 +14,9 @@ timezone:
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: eleiton # the main title
+title: The Dev Journal # the main title
 
-tagline: The Dev Journal - Insights and Tips for Software Developers
+tagline: Insights and Tips for Software Developers
 
 description: >- # used by seo meta and the atom feed
   Insights and Tips for Software Developers
