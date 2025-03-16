@@ -1,9 +1,9 @@
 ---
-title: Running LLM and GenAI with your Intel Arc
+title: Running LLM and GenAI on Intel Arc GPU
 description: Make use of Intel Arc Series GPU to run Open WebUI with Ollama to interact with Large Language Models (LLM) and Generative AI (GenAI)
 author: eleiton
 date: 2025-03-15 00:00:00 +0100
-categories: [Blogging, Demo]
+categories: [AI]
 tags: [GenAI,LLM]
 pin: true
 math: true
@@ -12,7 +12,7 @@ image:
   path: /assets/img/2025-03-15/tucan.jpg
   alt: Picture of a tucan generated with GenAi
 ---
-
+## Introduction
 Have you ever dreamed of having a personal AI companion that can assist with tasks, generate ideas, or even create art? Imagine being able to bring your creative visions to life with ease, leveraging the power of artificial intelligence to streamline your workflow and enhance your productivity.
 
 As a software engineer, you're likely no stranger to the world of code and innovation. But have you ever considered taking your AI skills to the next level by running your own chatbots, generative AI systems, or content generation tools? With the rise of deep learning and natural language processing, the possibilities are endless, and the potential for creativity and automation is vast.
