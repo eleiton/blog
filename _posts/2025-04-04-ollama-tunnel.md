@@ -161,8 +161,7 @@ curl -i https://llm.example.com \
 Now you can try exploring different tools or services that allow access to LLMs. For example, if you want to run a ChatGPT like app in your Android device, you can run this OpenSource app called [GPTMobile](https://github.com/Taewan-P/gpt_mobile), that can connect to your Ollama instance.
 
 
-![Desktop View](/assets/img/2025-04-03/gpt-mobile-1.png){: width="300" height="auto" .w-45 .normal}
-![Desktop View](/assets/img/2025-04-03/gpt-mobile-2.png){: width="300" height="auto" .w-45 .right}
+![Desktop View](/assets/img/2025-04-03/gpt-mobile-1.png){: width="300" height="auto" .w-45 .center}
 
 
 ## References
